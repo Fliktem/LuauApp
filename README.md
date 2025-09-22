@@ -7,6 +7,6 @@ A small utility program to install [Luau](https://github.com/luau-lang/luau) to 
 First, download the latest release binary. You can then run the program to install Luau.
 
 Command line arguments:
-* `--install` (optonal): Install Luau.
+* `--install` (optional): Install Luau.
 * `--update`: Update Luau.
 * `--uninstall`: Uninstall Luau.
