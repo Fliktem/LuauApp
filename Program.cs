@@ -29,6 +29,14 @@ class Program
             return;
         }
 
+        // Update if update argument
+        if (args[0] == "--update")
+        {
+            Update(installationFolder);
+            Console.ReadKey();
+            return;
+        }
+
         // Uninstall if uninstall argument
         if (args[0] == "--uninstall")
         {
@@ -87,7 +95,7 @@ class Program
             return;
         }
 
-        Console.WriteLine("Uninstalling...");
+        Console.WriteLine("Beginning uninstallation...");
 
         if (Directory.Exists(installationFolder))
         {
@@ -114,6 +122,19 @@ class Program
         }
 
         Console.WriteLine("Uninstallation complete.");
+    }
+
+    static async void Update(string installationFolder)
+    {
+        Console.WriteLine("Beginning update...");
+
+        if (IsInstalled(installationFolder))
+        {
+            Uninstall(installationFolder);
+        }
+
+        Install(installationFolder);
+        Console.WriteLine("Update complete.");
     }
 
     static async Task<string?> GetReleaseURL()
