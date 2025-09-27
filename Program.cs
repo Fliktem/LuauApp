@@ -103,23 +103,8 @@ class Program
             Directory.Delete(installationFolder, true);
         }
 
-        Console.WriteLine($"Deleting {INSTALLATION_FOLDER_NAME} folder from PATH...");
-
-        string? currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User);
-
-        if (currentPath != null && currentPath.Contains(installationFolder))
-        {
-            string newPath = currentPath.Replace(installationFolder + ";", "");
-            Environment.SetEnvironmentVariable("PATH", newPath, EnvironmentVariableTarget.User);
-        }
-
-        RegistryKey? key = Registry.CurrentUser.OpenSubKey("Environment", true);
-
-        if (key != null)
-        {
-            key.DeleteValue("PATH", true);
-            key.Close();
-        }
+        Console.WriteLine($"Removing {INSTALLATION_FOLDER_NAME} folder from PATH...");
+        RemoveFolderFromPath(installationFolder);
 
         Console.WriteLine("Uninstallation complete.");
     }
@@ -176,11 +161,22 @@ class Program
 
     static void AddFolderToPath(string folder)
     {
-        string? currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User);
+        string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User) ?? string.Empty;
 
-        if (currentPath == null || !currentPath.Contains(folder))
+        if (!currentPath.Contains(folder))
         {
-            string newPath = (currentPath == null) ? folder : currentPath + ";" + folder;
+            string newPath = string.IsNullOrEmpty(currentPath) ? folder : currentPath + ";" + folder;
+            Environment.SetEnvironmentVariable("PATH", newPath, EnvironmentVariableTarget.User);
+        }
+    }
+
+    static void RemoveFolderFromPath(string folder)
+    {
+        string currentPath = Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User) ?? string.Empty;
+
+        if (currentPath.Contains(folder))
+        {
+            string newPath = currentPath.Replace(";" + folder, "").Replace(folder + ";", "").Replace(folder, "");
             Environment.SetEnvironmentVariable("PATH", newPath, EnvironmentVariableTarget.User);
         }
     }
