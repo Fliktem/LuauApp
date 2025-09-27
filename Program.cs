@@ -1,5 +1,4 @@
 ﻿using System.IO.Compression;
-using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 
 class Program
@@ -8,7 +7,7 @@ class Program
     const string ZIP_FILE_NAME = "luau-windows.zip";
     const string INSTALLATION_FOLDER_NAME = ".luau";
 
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
         // Stop if OS is not Windows
         if (!OperatingSystem.IsWindows())
@@ -24,7 +23,7 @@ class Program
         // Install if no arguments or install argument
         if (args.Length == 0 || args[0] == "--install")
         {
-            Install(installationFolder);
+            await Install(installationFolder);
             Console.ReadKey();
             return;
         }
@@ -32,7 +31,7 @@ class Program
         // Update if update argument
         if (args[0] == "--update")
         {
-            Update(installationFolder);
+            await Update(installationFolder);
             Console.ReadKey();
             return;
         }
@@ -51,7 +50,7 @@ class Program
         return Directory.Exists(installationFolder);
     }
 
-    static async void Install(string installationFolder)
+    static async Task Install(string installationFolder)
     {
         // Prevent if already installed
         if (IsInstalled(installationFolder))
@@ -86,7 +85,7 @@ class Program
         Console.WriteLine("Installation complete.");
     }
 
-    static async void Uninstall(string installationFolder)
+    static void Uninstall(string installationFolder)
     {
         // Prevent if already uninstalled
         if (!IsInstalled(installationFolder))
@@ -109,7 +108,7 @@ class Program
         Console.WriteLine("Uninstallation complete.");
     }
 
-    static async void Update(string installationFolder)
+    static async Task Update(string installationFolder)
     {
         Console.WriteLine("Beginning update...");
 
@@ -118,7 +117,7 @@ class Program
             Uninstall(installationFolder);
         }
 
-        Install(installationFolder);
+        await Install(installationFolder);
         Console.WriteLine("Update complete.");
     }
 
